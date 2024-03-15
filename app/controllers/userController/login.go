@@ -15,7 +15,7 @@ type autoLoginForm struct {
 	LoginType string `json:"type"`
 }
 type passwordLoginForm struct {
-	Username  string `json:"username" binding:"required"`
+	UserID    string `json:"userID" binding:"required"`
 	Password  string `json:"password" binding:"required"`
 	LoginType string `json:"type"`
 }
@@ -29,7 +29,7 @@ func LoginByPassword(c *gin.Context) {
 		return
 	}
 	// 验证用户
-	user, err := userServices.GetUserByStudentIDAndPassword(postForm.Username, postForm.Password)
+	user, err := userServices.GetUserByStudentIDAndPassword(postForm.UserID, postForm.Password)
 	if err == gorm.ErrRecordNotFound {
 		_ = c.AbortWithError(200, apiException.NoThatPasswordOrWrong)
 		return
@@ -48,8 +48,8 @@ func LoginByPassword(c *gin.Context) {
 	// 自定义响应
 	utils.JsonSuccessResponse(c, gin.H{
 		"user": gin.H{
-			"id":        user.ID,
-			"studentID": user.StudentID,
+			"ID":     user.ID,
+			"userID": user.UserID,
 			// 其他字段
 			"username":   user.Username,
 			"school":     user.School,
@@ -68,8 +68,8 @@ func AuthBySession(c *gin.Context) {
 	}
 	utils.JsonSuccessResponse(c, gin.H{
 		"user": gin.H{
-			"id":        user.ID,
-			"studentID": user.StudentID,
+			"ID":     user.ID,
+			"userID": user.UserID,
 			// 其他字段
 			"username":   user.Username,
 			"school":     user.School,

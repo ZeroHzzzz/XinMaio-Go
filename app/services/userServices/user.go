@@ -7,15 +7,16 @@ import (
 	"xinmiao/config/database"
 )
 
-func GetUserByStudentIDAndPassword(studentID, password string) (*models.User, error) {
+func GetUserByStudentIDAndPassword(userID, password string) (*models.User, error) {
+	// 通过学号和密码获取学生用户信息
 	h := sha256.New()
 	h.Write([]byte(password))
 	user := models.User{}
 	pass := hex.EncodeToString(h.Sum(nil))
 	result := database.DB.Where(
 		&models.User{
-			StudentID: studentID,
-			Password:  pass,
+			UserID:   userID,
+			Password: pass,
 		},
 	).First(&user)
 	if result.Error != nil {
@@ -26,11 +27,28 @@ func GetUserByStudentIDAndPassword(studentID, password string) (*models.User, er
 	return &user, nil
 }
 
-func GetUserID(id string) (*models.User, error) {
+func GetUserByID(ID string) (*models.User, error) {
+	// 通过学号获取学生用户信息
 	user := models.User{}
 	result := database.DB.Where(
 		&models.User{
-			ID: id,
+			ID: ID,
+		},
+	).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	DecryptUserKeyInfo(&user)
+	return &user, nil
+}
+
+func GetUserByUserID(userID string) (*models.User, error) {
+	// 通过学号获取学生用户信息
+	user := models.User{}
+	result := database.DB.Where(
+		&models.User{
+			UserID: userID,
 		},
 	).First(&user)
 	if result.Error != nil {

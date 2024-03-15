@@ -22,7 +22,7 @@ func GetUserSession(c *gin.Context) (*models.User, error) {
 	if id == nil {
 		return nil, errors.New("")
 	}
-	user, _ := userServices.GetUserID(id.(string))
+	user, _ := userServices.GetUserByID(id.(string))
 	if user == nil {
 		ClearUserSession(c)
 		return nil, errors.New("")
